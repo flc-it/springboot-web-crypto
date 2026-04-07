@@ -16,33 +16,42 @@
 
 package org.flcit.springboot.web.crypto.serializer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.flcit.springboot.commons.crypto.service.CryptoService;
 import org.flcit.springboot.web.crypto.annotation.Crypto;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JacksonComponent;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.ContextualSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 /**
  * @param <T>
  * @since 
  * @author Florian Lestic
  */
-public class BaseCryptoJsonSerializer<T> extends JsonSerializer<T> implements ContextualSerializer {
+@JacksonComponent
+public class BaseCryptoJsonSerializer<T> extends ValueSerializer<T> implements BeanFactoryAware {
 
     private static final Map<Class<?>, BaseCryptoJsonSerializer<?>> SERIALIZER = new HashMap<>(1);
 
-    private final CryptoService cryptoService;
+    @Autowired
+    private CryptoService cryptoService;
 
     private final Class<T> handledType;
     private final Long timeValidity;
+
+    @SuppressWarnings("unchecked")
+    public BaseCryptoJsonSerializer(CryptoService cryptoService) {
+        this(cryptoService, (Class<T>) Void.class, null);
+    }
 
     /**
      * @param cryptoService
@@ -70,7 +79,7 @@ public class BaseCryptoJsonSerializer<T> extends JsonSerializer<T> implements Co
      *
      */
     @Override
-    public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(T value, JsonGenerator gen, SerializationContext serializers) {
         gen.writeString(timeValidity != null ? cryptoService.encryptToString(toString(value), timeValidity) : cryptoService.encryptToString(toString(value)));
     }
 
@@ -82,8 +91,7 @@ public class BaseCryptoJsonSerializer<T> extends JsonSerializer<T> implements Co
      *
      */
     @Override
-    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property)
-            throws JsonMappingException {
+    public ValueSerializer<?> createContextual(SerializationContext ctxt, BeanProperty property) {
         final long dureeValidityInMilliseconds = property.getAnnotation(Crypto.class).timeValidity();
         if (dureeValidityInMilliseconds <= 0) {
             BaseCryptoJsonSerializer<?> serializer = SERIALIZER.get(Void.class);
@@ -95,6 +103,11 @@ public class BaseCryptoJsonSerializer<T> extends JsonSerializer<T> implements Co
         } else {
             return new BaseCryptoJsonSerializer<>(cryptoService, Void.class, dureeValidityInMilliseconds);
         }
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        System.out.println("TEST");
     }
 
 }

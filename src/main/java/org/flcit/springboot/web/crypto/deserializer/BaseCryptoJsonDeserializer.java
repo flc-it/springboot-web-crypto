@@ -16,35 +16,44 @@
 
 package org.flcit.springboot.web.crypto.deserializer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.flcit.commons.core.util.ReflectionUtils;
 import org.flcit.springboot.commons.crypto.service.CryptoService;
 import org.flcit.springboot.web.crypto.annotation.Crypto;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JacksonComponent;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
 /**
  * @param <T>
  * @since 
  * @author Florian Lestic
  */
-public class BaseCryptoJsonDeserializer<T> extends JsonDeserializer<T> implements ContextualDeserializer {
+@JacksonComponent
+public class BaseCryptoJsonDeserializer<T> extends ValueDeserializer<T> implements BeanFactoryAware {
 
-    private static final Map<Class<?>, JsonDeserializer<?>> DESERIALIZER = new HashMap<>(1);
-    private static final Map<Class<?>, JsonDeserializer<?>> DESERIALIZER_VALIDITY = new HashMap<>(1);
+    private static final Map<Class<?>, ValueDeserializer<?>> DESERIALIZER = new HashMap<>(1);
+    private static final Map<Class<?>, ValueDeserializer<?>> DESERIALIZER_VALIDITY = new HashMap<>(1);
 
-    private final CryptoService cryptoService;
+    @Autowired
+    private CryptoService cryptoService;
 
     private final Class<T> handledType;
     private final boolean validity;
+
+    @SuppressWarnings("unchecked")
+    public BaseCryptoJsonDeserializer(CryptoService cryptoService) {
+        this(cryptoService, (Class<T>) Void.class, false);
+    }
 
     /**
      * @param cryptoService
@@ -72,8 +81,8 @@ public class BaseCryptoJsonDeserializer<T> extends JsonDeserializer<T> implement
      *
      */
     @Override
-    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        return ReflectionUtils.convert(validity ? cryptoService.decryptWithValidity(p.getText()) : cryptoService.decrypt(p.getText()), handledType);
+    public T deserialize(JsonParser p, DeserializationContext ctxt) {
+        return ReflectionUtils.convert(validity ? cryptoService.decryptWithValidity(p.getString()) : cryptoService.decrypt(p.getString()), handledType);
     }
 
     /**
@@ -81,18 +90,22 @@ public class BaseCryptoJsonDeserializer<T> extends JsonDeserializer<T> implement
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property)
-            throws JsonMappingException {
+    public ValueDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) {
         final Class<?> classResponse = property.getType().getRawClass();
         final long timeValidity = property.getAnnotation(Crypto.class).timeValidity();
         boolean hasValidity = property.getAnnotation(Crypto.class).withValidity();
         hasValidity |= timeValidity > 0;
-        JsonDeserializer<?> deserializer = (hasValidity ? DESERIALIZER_VALIDITY : DESERIALIZER).get(classResponse);
+        ValueDeserializer<?> deserializer = (hasValidity ? DESERIALIZER_VALIDITY : DESERIALIZER).get(classResponse);
         if (deserializer == null) {
             deserializer = new BaseCryptoJsonDeserializer(this.cryptoService, classResponse, hasValidity);
             (hasValidity ? DESERIALIZER_VALIDITY : DESERIALIZER).put(classResponse, deserializer);
         }
         return deserializer;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        System.out.println("TEST");
     }
 
 }

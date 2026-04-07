@@ -32,13 +32,13 @@ import org.flcit.springboot.web.crypto.configuration.CryptoWebConfiguration;
 
 class GenerationUrlFrontServiceTest {
 
-    private final CryptoWebConfiguration WebConfiguration = new CryptoWebConfiguration();
+    private final CryptoWebConfiguration webConfiguration = new CryptoWebConfiguration();
     private final CryptoConfiguration configuration = new CryptoConfiguration();
     private final CryptoService service;
 
     GenerationUrlFrontServiceTest() {
-        WebConfiguration.setDomain("domain");
-        WebConfiguration.setEnvironment("test");
+        webConfiguration.setDomain("domain");
+        webConfiguration.setEnvironment("test");
         configuration.setKeyString("KEY");
         this.service = new CryptoService(configuration);
     }
@@ -47,9 +47,9 @@ class GenerationUrlFrontServiceTest {
     void decodeUnsupportedEncodingExceptionTest() throws UnsupportedEncodingException {
         try (MockedStatic<URLDecoder> mock = mockStatic(URLDecoder.class)) {
             when(URLDecoder.decode(anyString(), anyString())).thenThrow(UnsupportedEncodingException.class);
-            final GenerationUrlFrontService service = new GenerationUrlFrontService(this.service, this.WebConfiguration);
+            final GenerationUrlFrontService frontService = new GenerationUrlFrontService(this.service, this.webConfiguration);
             final StringBuilder url = new StringBuilder("http://localhost/test/generate/url");
-            assertThrows(IllegalStateException.class, () -> service.getGeneratedUrlObject(url, "id", false));
+            assertThrows(IllegalStateException.class, () -> frontService.getGeneratedUrlObject(url, "id", false));
         }
     }
 

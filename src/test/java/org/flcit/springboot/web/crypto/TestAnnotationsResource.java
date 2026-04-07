@@ -75,6 +75,7 @@ class TestAnnotationsResource {
             @PathVariable @Crypto Long idLongObject,
             @PathVariable @Crypto long idLong,
             @PathVariable @Crypto BigInteger idBigInteger) {
+     // Empty
     }
 
     @GetMapping(TEST_ANNOTATION_VALIDITY_PATH_VARIABLE_REQUEST_PATH)
@@ -85,6 +86,7 @@ class TestAnnotationsResource {
             @PathVariable @Crypto(withValidity = true) Long idLongObject,
             @PathVariable @Crypto(withValidity = true) long idLong,
             @PathVariable @Crypto(withValidity = true) BigInteger idBigInteger) {
+     // Empty
     }
 
     @GetMapping(TEST_ANNOTATION_REQUEST_PARAM_PATH)
@@ -95,6 +97,7 @@ class TestAnnotationsResource {
             @RequestParam @Crypto Long idLongObject,
             @RequestParam @Crypto long idLong,
             @RequestParam @Crypto BigInteger idBigInteger) {
+     // Empty
     }
 
     @GetMapping(TEST_ANNOTATION_VALIDITY_REQUEST_PARAM_PATH)
@@ -105,14 +108,17 @@ class TestAnnotationsResource {
             @RequestParam @Crypto(withValidity = true) Long idLongObject,
             @RequestParam @Crypto(withValidity = true) long idLong,
             @RequestParam @Crypto(withValidity = true) BigInteger idBigInteger) {
+     // Empty
     }
 
     @PostMapping(TEST_ANNOTATION_BODY_PATH)
     public void testAnnotationBody(@RequestBody CryptoResponse cryptoResponse) {
+     // Empty
     }
 
     @PostMapping(TEST_ANNOTATION_VALIDITY_BODY_PATH)
     public void testAnnotationValidityBody(@RequestBody CryptoValidityResponse cryptoValidityResponse) {
+     // Empty
     }
 
 }

@@ -17,42 +17,33 @@
 package org.flcit.springboot.web.crypto.converter;
 
 import org.flcit.springboot.commons.crypto.service.CryptoService;
-import org.flcit.springboot.web.crypto.deserializer.BaseCryptoJsonDeserializer;
 import org.flcit.springboot.web.crypto.serializer.BaseCryptoJsonSerializer;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.boot.jackson.JacksonComponent;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 /**
  * 
  * @since 
  * @author Florian Lestic
  */
-public final class DefaultCryptoJsonConverter {
+@JacksonComponent
+public class DefaultCryptoJsonSerializer extends BaseCryptoJsonSerializer<Void> implements BeanFactoryAware {
 
-    private DefaultCryptoJsonConverter() { }
-
-    /**
-     * 
-     * @since 
-     * @author Florian Lestic
-     */
-    public static class DefaultCryptoJsonSerializer extends BaseCryptoJsonSerializer<Void> {
-
-        protected DefaultCryptoJsonSerializer(CryptoService cryptoService) {
-            super(cryptoService, Void.class);
-        }
-
+    public DefaultCryptoJsonSerializer() {
+        super(null, Void.class);
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    /**
-     * 
-     * @since 
-     * @author Florian Lestic
-     */
-    public static class DefaultCryptoJsonDeserializer extends BaseCryptoJsonDeserializer<Void> {
+    public DefaultCryptoJsonSerializer(CryptoService cryptoService) {
+        super(cryptoService, Void.class);
+    }
 
-        protected DefaultCryptoJsonDeserializer(CryptoService cryptoService) {
-            super(cryptoService, Void.class);
-        }
-
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        System.out.println("TEST");
     }
 
 }

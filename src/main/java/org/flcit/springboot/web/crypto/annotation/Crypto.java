@@ -26,10 +26,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import org.flcit.springboot.web.crypto.converter.DefaultCryptoJsonConverter;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
+
+import org.flcit.springboot.web.crypto.converter.DefaultCryptoJsonDeserializer;
+import org.flcit.springboot.web.crypto.converter.DefaultCryptoJsonSerializer;
 
 /**
  * 
@@ -39,8 +41,8 @@ import org.flcit.springboot.web.crypto.converter.DefaultCryptoJsonConverter;
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, PARAMETER, METHOD })
 @JacksonAnnotationsInside
-@JsonSerialize(using = DefaultCryptoJsonConverter.DefaultCryptoJsonSerializer.class)
-@JsonDeserialize(using = DefaultCryptoJsonConverter.DefaultCryptoJsonDeserializer.class)
+@JsonSerialize(using = DefaultCryptoJsonSerializer.class)
+@JsonDeserialize(using = DefaultCryptoJsonDeserializer.class)
 public @interface Crypto {
 
     /**

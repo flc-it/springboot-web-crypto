@@ -16,20 +16,29 @@
 
 package org.flcit.springboot.web.crypto;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
+import tools.jackson.databind.json.JsonMapper;
 
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.support.JacksonHandlerInstantiator;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.flcit.springboot.commons.crypto.service.CryptoService;
 import org.flcit.springboot.web.crypto.configuration.CryptoWebConfiguration;
 import org.flcit.springboot.web.crypto.configuration.WebCryptoWebMvcConfiguration;
+import org.flcit.springboot.web.crypto.converter.DefaultCryptoJsonDeserializer;
+import org.flcit.springboot.web.crypto.converter.DefaultCryptoJsonSerializer;
+import org.flcit.springboot.web.crypto.deserializer.BaseCryptoJsonDeserializer;
+import org.flcit.springboot.web.crypto.serializer.BaseCryptoJsonSerializer;
 import org.flcit.springboot.web.crypto.service.GenerationUrlFrontService;
 
 /**
@@ -41,6 +50,7 @@ import org.flcit.springboot.web.crypto.service.GenerationUrlFrontService;
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class })
 @EnableConfigurationProperties(CryptoWebConfiguration.class)
+//@Import({/*DefaultCryptoJsonConverter.class,*/ BaseCryptoJsonSerializer.class, BaseCryptoJsonDeserializer.class, DefaultCryptoJsonDeserializer.class, DefaultCryptoJsonSerializer.class})
 public class WebCryptoAutoConfiguration {
 
     /**
@@ -72,6 +82,11 @@ public class WebCryptoAutoConfiguration {
     @ConditionalOnProperty(prefix = "crypto.web", name = "annotation")
     public CryptoAnnotationFormatterFactory getCryptoAnnotationFormatterFactory(CryptoService cryptoService) {
         return new CryptoAnnotationFormatterFactory(cryptoService);
+    }
+
+    @Bean
+    JsonMapperBuilderCustomizer instantiatorCustomizer(AutowireCapableBeanFactory beanFactory) {
+        return builder -> builder.handlerInstantiator(new JacksonHandlerInstantiator(beanFactory));
     }
 
 }
