@@ -16,7 +16,7 @@
 
 package org.flcit.springboot.web.crypto;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +50,7 @@ class TestGenerationUrlResource {
     }
 
     @GetMapping(TEST_GENERATE_URL_PATH + "/{id}")
-    public GeneratedUrlResponse testGenerateUrlValidity(HttpServletRequest request, @PathVariable String id) {
+    public GeneratedUrlResponse testGenerateUrlValidity(HttpServletRequest request, @PathVariable("id") String id) {
         return generationUrlFrontService.getGeneratedUrlObject(new StringBuilder(request.getRequestURL()), id, true);
     }
 

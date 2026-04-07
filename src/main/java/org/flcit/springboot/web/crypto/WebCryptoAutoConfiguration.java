@@ -16,7 +16,7 @@
 
 package org.flcit.springboot.web.crypto;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

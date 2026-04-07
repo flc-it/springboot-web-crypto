@@ -69,42 +69,42 @@ class TestAnnotationsResource {
 
     @GetMapping(TEST_ANNOTATION_PATH_VARIABLE_REQUEST_PATH)
     public void testAnnotationPathVariable(
-            @PathVariable @Crypto String idString,
-            @PathVariable @Crypto int idInt,
-            @PathVariable @Crypto Integer idInteger,
-            @PathVariable @Crypto Long idLongObject,
-            @PathVariable @Crypto long idLong,
-            @PathVariable @Crypto BigInteger idBigInteger) {
+            @PathVariable("idString") @Crypto String idString,
+            @PathVariable("idInt") @Crypto int idInt,
+            @PathVariable("idInteger") @Crypto Integer idInteger,
+            @PathVariable("idLongObject") @Crypto Long idLongObject,
+            @PathVariable("idLong") @Crypto long idLong,
+            @PathVariable("idBigInteger") @Crypto BigInteger idBigInteger) {
     }
 
     @GetMapping(TEST_ANNOTATION_VALIDITY_PATH_VARIABLE_REQUEST_PATH)
     public void testAnnotationValidityPathVariable(
-            @PathVariable @Crypto(withValidity = true) String idString,
-            @PathVariable @Crypto(withValidity = true) int idInt,
-            @PathVariable @Crypto(withValidity = true) Integer idInteger,
-            @PathVariable @Crypto(withValidity = true) Long idLongObject,
-            @PathVariable @Crypto(withValidity = true) long idLong,
-            @PathVariable @Crypto(withValidity = true) BigInteger idBigInteger) {
+            @PathVariable("idString") @Crypto(withValidity = true) String idString,
+            @PathVariable("idInt") @Crypto(withValidity = true) int idInt,
+            @PathVariable("idInteger") @Crypto(withValidity = true) Integer idInteger,
+            @PathVariable("idLongObject") @Crypto(withValidity = true) Long idLongObject,
+            @PathVariable("idLong") @Crypto(withValidity = true) long idLong,
+            @PathVariable("idBigInteger") @Crypto(withValidity = true) BigInteger idBigInteger) {
     }
 
     @GetMapping(TEST_ANNOTATION_REQUEST_PARAM_PATH)
     public void testAnnotationRequestParam(
-            @RequestParam @Crypto String idString,
-            @RequestParam @Crypto int idInt,
-            @RequestParam @Crypto Integer idInteger,
-            @RequestParam @Crypto Long idLongObject,
-            @RequestParam @Crypto long idLong,
-            @RequestParam @Crypto BigInteger idBigInteger) {
+            @RequestParam("idString") @Crypto String idString,
+            @RequestParam("idInt") @Crypto int idInt,
+            @RequestParam("idInteger") @Crypto Integer idInteger,
+            @RequestParam("idLongObject") @Crypto Long idLongObject,
+            @RequestParam("idLong") @Crypto long idLong,
+            @RequestParam("idBigInteger") @Crypto BigInteger idBigInteger) {
     }
 
     @GetMapping(TEST_ANNOTATION_VALIDITY_REQUEST_PARAM_PATH)
     public void testAnnotationValidityRequestParam(
-            @RequestParam @Crypto(withValidity = true) String idString,
-            @RequestParam @Crypto(withValidity = true) int idInt,
-            @RequestParam @Crypto(withValidity = true) Integer idInteger,
-            @RequestParam @Crypto(withValidity = true) Long idLongObject,
-            @RequestParam @Crypto(withValidity = true) long idLong,
-            @RequestParam @Crypto(withValidity = true) BigInteger idBigInteger) {
+            @RequestParam("idString") @Crypto(withValidity = true) String idString,
+            @RequestParam("idInt") @Crypto(withValidity = true) int idInt,
+            @RequestParam("idInteger") @Crypto(withValidity = true) Integer idInteger,
+            @RequestParam("idLongObject") @Crypto(withValidity = true) Long idLongObject,
+            @RequestParam("idLong") @Crypto(withValidity = true) long idLong,
+            @RequestParam("idBigInteger") @Crypto(withValidity = true) BigInteger idBigInteger) {
     }
 
     @PostMapping(TEST_ANNOTATION_BODY_PATH)
